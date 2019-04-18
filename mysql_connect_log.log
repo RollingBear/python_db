@@ -1,0 +1,21 @@
+2019-04-18 10:07:58,206 mysql_operate.py[line:51] ERROR Traceback (most recent call last):
+  File "E:/python/python_db/mysql_operate.py", line 43, in query
+    self.cursor.execute(sql)
+  File "C:\Users\Administrator\python_db\lib\site-packages\pymysql\cursors.py", line 170, in execute
+    result = self._query(query)
+  File "C:\Users\Administrator\python_db\lib\site-packages\pymysql\cursors.py", line 328, in _query
+    conn.query(q)
+  File "C:\Users\Administrator\python_db\lib\site-packages\pymysql\connections.py", line 517, in query
+    self._affected_rows = self._read_query_result(unbuffered=unbuffered)
+  File "C:\Users\Administrator\python_db\lib\site-packages\pymysql\connections.py", line 732, in _read_query_result
+    result.read()
+  File "C:\Users\Administrator\python_db\lib\site-packages\pymysql\connections.py", line 1075, in read
+    first_packet = self.connection._read_packet()
+  File "C:\Users\Administrator\python_db\lib\site-packages\pymysql\connections.py", line 684, in _read_packet
+    packet.check_error()
+  File "C:\Users\Administrator\python_db\lib\site-packages\pymysql\protocol.py", line 220, in check_error
+    err.raise_mysql_exception(self._data)
+  File "C:\Users\Administrator\python_db\lib\site-packages\pymysql\err.py", line 109, in raise_mysql_exception
+    raise errorclass(errno, errval)
+pymysql.err.ProgrammingError: (1146, "Table 'test.user' doesn't exist")
+
