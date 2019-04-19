@@ -4,7 +4,10 @@
 
 __author__ = 'RollingBear'
 
+import DBUtils
 import pymysql
+import logging
+import traceback
 
 
 class mysql():
@@ -77,6 +80,7 @@ class mysql():
             self.__connect().commit()
         except:
             self.__connect().rollback()
+            logging.info(traceback.format_exc())
             return False
 
         return data
@@ -141,11 +145,14 @@ class mysql():
 
         return s + ')'
 
-    def format_query_dict_1(self):
-        pass
+    def format_query_dict(self, _list_name, _table_name, _condition):
+        _sql = dict()
 
-    def format_query_dict_2(self):
-        pass
+        _sql['select'] = _list_name
+        _sql['from'] = _table_name
+        _sql['where'] = _condition
+
+        return self.query_dict(_sql)
 
     def format_delete_dict(self, _table_name, _condition):
         _sql = dict()
@@ -155,8 +162,14 @@ class mysql():
 
         return self.query_dict(_sql)
 
-    def format_insert_dict(self):
-        pass
+    def format_insert_dict(self, _table_name, _domain_array, _value_array):
+        _sql = dict()
+
+        _sql['insert'] = _table_name
+        _sql['domain_array'] = _domain_array
+        _sql['value_array'] = _value_array
+
+        return self.query_dict(_sql)
 
     def sql_sentence(self, _sql):
 
