@@ -8,7 +8,7 @@ import pymysql
 
 
 class mysql():
-    '''
+    """
         query dictionary:
             sql = {
                     'select'        : 'select list name',
@@ -34,7 +34,7 @@ class mysql():
                     'insert'        : 'table name',
                     'domain_array'  : [ 'list name', 'list name', ...]
                     'value_array'   : [ 'value', 'value', ...]
-    '''
+    """
 
     __db = None
 
@@ -55,7 +55,7 @@ class mysql():
             self.__db.close()
 
     def __connect(self):
-        if self.__db == None:
+        if self.__db is None:
             self.__db = pymysql.connect(
                 host=self.__config['host'],
                 port=self.__config['port'],
@@ -83,7 +83,7 @@ class mysql():
 
     def query_dict(self, _sql_dict):
         if 'select' in _sql_dict.keys():
-            sql = 'SELECT ' + _sql_dict['sleect'] + ' FROM ' + _sql_dict['from'] + self.where(_sql_dict['where'])
+            sql = 'SELECT ' + _sql_dict['select'] + ' FROM ' + _sql_dict['from'] + self.where(_sql_dict['where'])
             print(sql)
             return self.query(sql)
         elif 'insert' in _sql_dict.keys():
@@ -97,8 +97,9 @@ class mysql():
             print(sql)
             return self.query(sql)
 
-    def where(self, _sql):
-        if isinstance(_sql, dict) == False:
+    @staticmethod
+    def where(_sql):
+        if isinstance(_sql, dict) is False:
             return ' WHERE ' + str(_sql)
         elif isinstance(_sql, dict):
             _sql_dict = _sql
@@ -113,7 +114,8 @@ class mysql():
 
             return s
 
-    def quote(self, _data_array, type_filter=True):
+    @staticmethod
+    def quote(_data_array, type_filter=True):
         s = '('
         index = 0
         if type_filter:
@@ -138,3 +140,24 @@ class mysql():
                     s += ', ' + domain
 
         return s + ')'
+
+    def format_query_dict_1(self):
+        pass
+
+    def format_query_dict_2(self):
+        pass
+
+    def format_delete_dict(self, _table_name, _condition):
+        _sql = dict()
+
+        _sql['delete'] = _table_name
+        _sql['from'] = _condition
+
+        return self.query_dict(_sql)
+
+    def format_insert_dict(self):
+        pass
+
+    def sql_sentence(self, _sql):
+
+        return self.query(_sql)

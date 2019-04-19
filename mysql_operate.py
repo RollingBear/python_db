@@ -52,7 +52,7 @@ class mysql():
 
     def insert(self, insert_content=None, table_name=None):
 
-        if insert_content == None or table_name == None:
+        if insert_content is None or table_name is None:
             logging.info('parameter can not be NULL')
             return
         else:
@@ -66,7 +66,7 @@ class mysql():
                 self.db.rollback()
 
     def update(self, update_content=None, update_location=None, table_name=None):
-        if update_content == None or update_location == None or table_name == None:
+        if update_content is None or update_location is None or table_name is None:
             logging.info('parameter can not be NULL')
             return
         else:
@@ -80,7 +80,7 @@ class mysql():
                 self.db.rollback()
 
     def delete(self, delete_location=None, table_name=None):
-        if delete_location == None or table_name == None:
+        if delete_location is None or table_name is None:
             logging.info('parameter can not be NULL')
             return
         else:
