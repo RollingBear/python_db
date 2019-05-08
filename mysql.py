@@ -4,10 +4,22 @@
 
 __author__ = 'RollingBear'
 
-import DBUtils
+import sys
 import pymysql
 import logging
+from logging.handlers import RotatingFileHandler
 import traceback
+
+logging.basicConfig(level=logging.INFO,
+                    format='%(asctime)s  %(threadName)s  %(filename)s[line:%(lineno)d] %(levelname)s %(message)s',
+                    stream=sys.stdout)
+
+Rthandler = RotatingFileHandler('sql_log.log', maxBytes=10 * 1024 * 1024, backupCount=10)
+Rthandler.setLevel(logging.INFO)
+formatter = logging.Formatter('%(asctime)s  %(threadName)s  %(filename)s[line:%(lineno)d] %(levelname)s %(message)s')
+Rthandler.setFormatter(formatter)
+logger = logging.getLogger('sql_log')
+logger.addHandler(Rthandler)
 
 
 class mysql():
@@ -37,6 +49,8 @@ class mysql():
                     'insert'        : 'table name',
                     'domain_array'  : [ 'list name', 'list name', ...]
                     'value_array'   : [ 'value', 'value', ...]
+
+        'where' can be None
     """
 
     __db = None
@@ -80,25 +94,31 @@ class mysql():
             self.__connect().commit()
         except:
             self.__connect().rollback()
-            logging.info(traceback.format_exc())
+            logger.error(traceback.format_exc())
             return False
 
         return data
 
     def query_dict(self, _sql_dict):
         if 'select' in _sql_dict.keys():
-            sql = 'SELECT ' + _sql_dict['select'] + ' FROM ' + _sql_dict['from'] + self.where(_sql_dict['where'])
-            print(sql)
+            if _sql_dict['where'] is '' or _sql_dict['where'] is None:
+                sql = 'SELECT ' + _sql_dict['select'] + ' FROM ' + _sql_dict['from']
+            else:
+                sql = 'SELECT ' + _sql_dict['select'] + ' FROM ' + _sql_dict['from'] + self.where(_sql_dict['where'])
+            logger.info('SQL statement to be executed: {}'.format(sql))
             return self.query(sql)
         elif 'insert' in _sql_dict.keys():
             sql = "INSERT INTO " + _sql_dict['insert'] + self.quote(_sql_dict['domain_array'],
                                                                     type_filter=False) + " VALUES " + self.quote(
                 _sql_dict['value_array'])
-            print(sql)
+            logger.info('SQL statement to be executed: {}'.format(sql))
             return self.query(sql)
         elif 'delete' in _sql_dict.keys():
-            sql = 'DELETE FROM ' + _sql_dict['delete'] + self.where(_sql_dict['where'])
-            print(sql)
+            if _sql_dict['where'] is '' or _sql_dict['where'] is None:
+                sql = 'DELETE FROM ' + _sql_dict['delete']
+            else:
+                sql = 'DELETE FROM ' + _sql_dict['delete'] + self.where(_sql_dict['where'])
+            logger.info('SQL statement to be executed: {}'.format(sql))
             return self.query(sql)
 
     @staticmethod
